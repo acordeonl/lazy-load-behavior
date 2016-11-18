@@ -1,0 +1,25 @@
+<link rel="import" href="../polymer/polymer.html">
+<script>
+    /**
+    * Behavior that highlights stuff.
+    *
+    * @polymerBehavior
+    */
+
+    LazyLoadBehavior = {
+        properties: {},
+        _load: function (index, imports) {
+            if (index === imports.length - 1) {
+                this.async(function () {
+                    Polymer.Base.importHref(imports[index].url, function () {}, function () {}, true);
+                }, imports[index].delay);
+                return;
+            }
+            this.async(function () {
+                Polymer.Base.importHref(imports[index].url, function () {
+                    this.$$('#root')._load(index + 1, imports);
+                }, function () {}, true);
+            }, imports[index].delay);
+        }
+    };
+</script>
